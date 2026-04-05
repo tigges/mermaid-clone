@@ -1,0 +1,472 @@
+openapi: 3.1.0
+info:
+  title: Import Wizard Intelligence API
+  version: 1.0.0
+  description: |
+    Starter OpenAPI contract for a target-independent import wizard.
+    Covers session lifecycle, file ingestion, parse/extract/preview/compile jobs,
+    visual QA compare, and artifact delivery.
+servers:
+  - url: https://api.example.com
+    description: Production
+  - url: http://localhost:8787
+    description: Local development
+tags:
+  - name: Sessions
+  - name: Files
+  - name: Jobs
+  - name: Review
+  - name: Preview
+  - name: Visual QA
+  - name: Compile
+paths:
+  /api/import/sessions:
+    post:
+      tags: [Sessions]
+      summary: Create import session
+      operationId: createImportSession
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                metadata:
+                  type: object
+                  additionalProperties: true
+      responses:
+        "201":
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportSession"
+
+  /api/import/sessions/{sessionId}:
+    get:
+      tags: [Sessions]
+      summary: Get import session
+      operationId: getImportSession
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Session details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportSession"
+
+  /api/import/sessions/{sessionId}/files:
+    post:
+      tags: [Files]
+      summary: Upload files to session
+      operationId: uploadImportFiles
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        "201":
+          description: File upload accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  files:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SourceFile"
+
+  /api/import/sessions/{sessionId}/parse:
+    post:
+      tags: [Jobs]
+      summary: Start parse/page-map job
+      operationId: startParseJob
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fileIds, parseProfile]
+              properties:
+                fileIds:
+                  type: array
+                  items: { type: string }
+                parseProfile:
+                  type: string
+                  enum: [default, strict, fast, layout_aware]
+                ocrPolicy:
+                  type: string
+                  enum: [auto, force, off]
+                  default: auto
+      responses:
+        "202":
+          description: Job created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAccepted"
+
+  /api/import/sessions/{sessionId}/pages:
+    get:
+      tags: [Sessions]
+      summary: Get page-map result for a page index
+      operationId: getPageMapByIndex
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+        - name: index
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Page map data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageMap"
+
+  /api/import/sessions/{sessionId}/settings:
+    post:
+      tags: [Sessions]
+      summary: Save import settings and model policy
+      operationId: saveImportSettings
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportSettings"
+      responses:
+        "200":
+          description: Settings saved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  settingsVersion:
+                    type: string
+
+  /api/import/sessions/{sessionId}/extract:
+    post:
+      tags: [Jobs]
+      summary: Start extraction and normalization to CPM
+      operationId: startExtractJob
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mode:
+                  type: string
+                  enum: [full, normalize_only]
+                  default: full
+      responses:
+        "202":
+          description: Job created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAccepted"
+
+  /api/import/sessions/{sessionId}/review:
+    get:
+      tags: [Review]
+      summary: Get review payload grouped for step-4 UI
+      operationId: getReviewPayload
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Review payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cpm:
+                    $ref: "#/components/schemas/CanonicalProcessModel"
+                  unresolved:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+
+  /api/import/sessions/{sessionId}/cpm:
+    patch:
+      tags: [Review]
+      summary: Apply patch operations to CPM
+      operationId: patchCanonicalModel
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [operations]
+              properties:
+                operations:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/CpmPatchOperation"
+      responses:
+        "200":
+          description: Updated CPM
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CanonicalProcessModel"
+
+  /api/import/sessions/{sessionId}/preview:
+    post:
+      tags: [Preview]
+      summary: Materialize preview graph from current CPM
+      operationId: materializePreviewGraph
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "202":
+          description: Job created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAccepted"
+    get:
+      tags: [Preview]
+      summary: Get preview graph
+      operationId: getPreviewGraph
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+        - name: clusterId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Preview graph payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PreviewGraph"
+
+  /api/import/sessions/{sessionId}/visual-qa/compare:
+    post:
+      tags: [Visual QA]
+      summary: Compare source document map with import preview
+      operationId: compareVisualQa
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [referenceSource]
+              properties:
+                referenceSource:
+                  type: object
+                  required: [kind]
+                  properties:
+                    kind:
+                      type: string
+                      enum: [uploaded_html, uploaded_json, embedded_reference]
+                    fileId:
+                      type: string
+                    url:
+                      type: string
+                      format: uri
+      responses:
+        "200":
+          description: Visual QA comparison result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VisualQaReport"
+
+  /api/import/sessions/{sessionId}/compile:
+    post:
+      tags: [Compile]
+      summary: Compile current CPM to target artifacts
+      operationId: compileArtifacts
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [targets]
+              properties:
+                targets:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/TargetFormat"
+                includeQaReport:
+                  type: boolean
+                  default: true
+      responses:
+        "202":
+          description: Job created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAccepted"
+
+  /api/import/sessions/{sessionId}/artifacts:
+    get:
+      tags: [Compile]
+      summary: Get artifact manifest
+      operationId: getArtifactManifest
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Artifact manifest
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArtifactManifest"
+
+  /api/jobs/{jobId}:
+    get:
+      tags: [Jobs]
+      summary: Get job status
+      operationId: getJobStatus
+      parameters:
+        - $ref: "#/components/parameters/JobId"
+      responses:
+        "200":
+          description: Job status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobStatus"
+
+  /api/jobs/{jobId}/events:
+    get:
+      tags: [Jobs]
+      summary: Stream job events (SSE)
+      operationId: streamJobEvents
+      parameters:
+        - $ref: "#/components/parameters/JobId"
+      responses:
+        "200":
+          description: SSE event stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+
+components:
+  parameters:
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      schema:
+        type: string
+    JobId:
+      name: jobId
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    TargetFormat:
+      type: string
+      enum: [mermaid, bpmn, processmap_v1, json, csv, pdf]
+
+    ImportSession:
+      $ref: ../schemas/session.schema.json
+    SourceFile:
+      $ref: ../schemas/session.schema.json#/$defs/SourceFile
+    PageMap:
+      $ref: ../schemas/page-map.schema.json
+    ImportSettings:
+      $ref: ../schemas/settings.schema.json
+    CanonicalProcessModel:
+      $ref: ../schemas/cpm.schema.json
+    PreviewGraph:
+      $ref: ../schemas/preview-graph.schema.json
+    ArtifactManifest:
+      $ref: ../schemas/artifact-manifest.schema.json
+    VisualQaReport:
+      $ref: ../schemas/visual-qa-report.schema.json
+
+    JobAccepted:
+      type: object
+      required: [jobId, status]
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum: [accepted]
+
+    JobStatus:
+      type: object
+      required: [jobId, status]
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum: [accepted, running, completed, failed]
+        stage:
+          type: string
+        progress:
+          type: number
+          minimum: 0
+          maximum: 100
+        message:
+          type: string
+        error:
+          type: object
+          additionalProperties: true
+
+    CpmPatchOperation:
+      type: object
+      required: [op, path]
+      properties:
+        op:
+          type: string
+          enum: [add, replace, remove, move]
+        path:
+          type: string
+        from:
+          type: string
+        value:
+          description: Operation value payload
+          type: [object, array, string, number, boolean, "null"]

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://flowcraft.dev/schemas/page-map.schema.json",
+  "title": "PageMap",
+  "type": "object",
+  "required": ["sessionId", "fileId", "index", "totalPages", "blocks", "tiles", "keywords"],
+  "properties": {
+    "sessionId": { "type": "string", "minLength": 1 },
+    "fileId": { "type": "string", "minLength": 1 },
+    "index": { "type": "integer", "minimum": 1 },
+    "totalPages": { "type": "integer", "minimum": 1 },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "label", "count", "active"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["title", "subtitle", "section", "heading", "body", "bullet", "keyword", "screenshot", "table", "other"]
+          },
+          "label": { "type": "string", "minLength": 1 },
+          "count": { "type": "integer", "minimum": 0 },
+          "active": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "tiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["class", "title", "description", "confidence"],
+        "properties": {
+          "class": {
+            "type": "string",
+            "enum": ["category_header", "section_header", "process", "sub_process", "actor", "fact", "unclassified", "screenshot", "other"]
+          },
+          "title": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}

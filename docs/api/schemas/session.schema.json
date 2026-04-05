@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://flowcraft.dev/schemas/import-wizard/session.schema.json",
+  "title": "ImportSession",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sessionId",
+    "status",
+    "currentStage",
+    "createdAt",
+    "settingsVersion",
+    "selectedFileIds"
+  ],
+  "properties": {
+    "sessionId": {
+      "type": "string",
+      "pattern": "^imp_[a-zA-Z0-9_-]{8,}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "running", "ready", "failed", "completed"]
+    },
+    "currentStage": {
+      "type": "string",
+      "enum": ["upload", "page_map", "settings", "review", "preview", "complete"]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "settingsVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "selectedFileIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^file_[a-zA-Z0-9_-]{8,}$"
+      },
+      "uniqueItems": true
+    },
+    "sourceFiles": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/sourceFile" }
+    },
+    "latestJobIds": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "parse": { "type": "string", "pattern": "^job_[a-zA-Z0-9_-]{8,}$" },
+        "extract": { "type": "string", "pattern": "^job_[a-zA-Z0-9_-]{8,}$" },
+        "preview": { "type": "string", "pattern": "^job_[a-zA-Z0-9_-]{8,}$" },
+        "compile": { "type": "string", "pattern": "^job_[a-zA-Z0-9_-]{8,}$" }
+      }
+    }
+  },
+  "$defs": {
+    "sourceFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileId", "fileName", "mimeType", "sizeBytes", "sha256"],
+      "properties": {
+        "fileId": {
+          "type": "string",
+          "pattern": "^file_[a-zA-Z0-9_-]{8,}$"
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mimeType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "pageEstimate": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

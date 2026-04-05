@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://flowcraft.dev/schemas/visual-qa-report.schema.json",
+  "title": "VisualQaReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["summary", "mismatches"],
+  "properties": {
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeMatch", "connectorMatch", "clusterThemeTitleMatch"],
+      "properties": {
+        "nodeMatch": { "type": "number", "minimum": 0, "maximum": 1 },
+        "connectorMatch": { "type": "number", "minimum": 0, "maximum": 1 },
+        "clusterThemeTitleMatch": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "mismatches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "message", "severity"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["node", "connector", "cluster", "theme", "title"]
+          },
+          "message": { "type": "string", "minLength": 1 },
+          "severity": { "type": "string", "enum": ["low", "medium", "high"] },
+          "sourceRef": { "type": "string" },
+          "targetRef": { "type": "string" },
+          "suggestedFix": { "type": "string" }
+        }
+      }
+    }
+  }
+}

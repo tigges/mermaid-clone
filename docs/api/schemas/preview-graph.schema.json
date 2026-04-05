@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://flowcraft.dev/schemas/preview-graph.schema.json",
+  "title": "PreviewGraph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["layout", "nodes", "edges"],
+  "properties": {
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine", "direction"],
+      "properties": {
+        "engine": { "type": "string", "enum": ["dagre", "elk", "manual"] },
+        "direction": { "type": "string", "enum": ["LR", "TB", "RL", "BT"] },
+        "clusterId": { "type": ["string", "null"] }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "label", "x", "y"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string", "enum": ["start", "action", "decision", "end", "subprocess", "fact", "context", "actor"] },
+          "label": { "type": "string" },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "width": { "type": "number" },
+          "height": { "type": "number" },
+          "clusterId": { "type": ["string", "null"] },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "from", "to", "edgeType"],
+        "properties": {
+          "id": { "type": "string" },
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "edgeType": { "type": "string", "enum": ["sequence", "branch_true", "branch_false", "handoff", "merge", "loop", "exception"] },
+          "label": { "type": ["string", "null"] },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    }
+  }
+}

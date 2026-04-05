@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://flowcraft.dev/schemas/settings.schema.json",
+  "title": "ImportSettings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "providerPolicy",
+    "primaryModel",
+    "outputIntent",
+    "features"
+  ],
+  "properties": {
+    "providerPolicy": {
+      "type": "string",
+      "enum": ["single", "fallback", "consensus"]
+    },
+    "primaryModel": {
+      "type": "string",
+      "enum": ["raw", "wizard", "gemini", "claude", "other"]
+    },
+    "secondaryModel": {
+      "type": ["string", "null"],
+      "enum": ["gemini", "claude", "other", null]
+    },
+    "outputIntent": {
+      "type": "string",
+      "enum": ["user_journey", "swimlane_process_map", "decision_tree"]
+    },
+    "features": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actorLanes",
+        "decisionNodes",
+        "systemReferences",
+        "confidenceLabels",
+        "crossClusterConnections"
+      ],
+      "properties": {
+        "actorLanes": { "type": "boolean" },
+        "decisionNodes": { "type": "boolean" },
+        "systemReferences": { "type": "boolean" },
+        "confidenceLabels": { "type": "boolean" },
+        "crossClusterConnections": { "type": "boolean" }
+      }
+    }
+  }
+}

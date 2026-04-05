@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://flowcraft.dev/schemas/cpm.schema.json",
+  "title": "CanonicalProcessModel",
+  "description": "Target-independent canonical process model used by import wizard adapters.",
+  "type": "object",
+  "required": [
+    "version",
+    "process",
+    "clusters",
+    "actors",
+    "nodes",
+    "edges",
+    "facts",
+    "unassigned",
+    "validation"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Semantic or date-based schema version for canonical model."
+    },
+    "process": {
+      "type": "object",
+      "required": ["id", "title", "type", "language"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": ["user_journey", "business_process", "mixed"]
+        },
+        "language": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "clusters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "themes"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "themes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "actors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "roleType": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "label", "confidence", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["start", "action", "decision", "subprocess", "end", "fact", "actor"]
+          },
+          "label": { "type": "string" },
+          "clusterId": { "type": "string" },
+          "actorId": { "type": "string" },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "sourceFileId",
+                "page",
+                "chunkId",
+                "charStart",
+                "charEnd",
+                "excerpt"
+              ],
+              "properties": {
+                "sourceFileId": { "type": "string" },
+                "page": { "type": "integer", "minimum": 1 },
+                "chunkId": { "type": "string" },
+                "charStart": { "type": "integer", "minimum": 0 },
+                "charEnd": { "type": "integer", "minimum": 0 },
+                "excerpt": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Extension point for target-specific or domain-specific metadata."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "from", "to", "edgeType", "confidence", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string" },
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "edgeType": {
+            "type": "string",
+            "enum": ["sequence", "branch", "merge", "handoff"]
+          },
+          "condition": { "type": "string" },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "sourceFileId",
+                "page",
+                "chunkId",
+                "charStart",
+                "charEnd",
+                "excerpt"
+              ],
+              "properties": {
+                "sourceFileId": { "type": "string" },
+                "page": { "type": "integer", "minimum": 1 },
+                "chunkId": { "type": "string" },
+                "charStart": { "type": "integer", "minimum": 0 },
+                "charEnd": { "type": "integer", "minimum": 0 },
+                "excerpt": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "evidenceRefs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "sourceFileId",
+                "page",
+                "chunkId",
+                "charStart",
+                "charEnd",
+                "excerpt"
+              ],
+              "properties": {
+                "sourceFileId": { "type": "string" },
+                "page": { "type": "integer", "minimum": 1 },
+                "chunkId": { "type": "string" },
+                "charStart": { "type": "integer", "minimum": 0 },
+                "charEnd": { "type": "integer", "minimum": 0 },
+                "excerpt": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "unassigned": {
+      "type": "array",
+      "description": "Low-confidence extracted items not confidently mapped into graph structure.",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "reason"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "reason": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["disconnectedNodes", "decisionExitViolations", "warnings"],
+      "properties": {
+        "disconnectedNodes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "decisionExitViolations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
