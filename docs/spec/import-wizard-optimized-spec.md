@@ -57,10 +57,14 @@ Users have process information spread across SOPs, meeting notes, policies, tick
 5. **Review & Validation UI**
    - Confidence and ambiguity queue
    - Source evidence preview per generated item
-6. **Compiler Layer**
+6. **Visual QA Comparator**
+   - Side-by-side document map overview and imported process map
+   - Node, connector, cluster, theme, and title comparison metrics
+   - Mismatch heatmap and drill-down evidence links
+7. **Compiler Layer**
    - Mermaid output
    - BPMN XML output
-7. **Editor Integration Layer**
+8. **Editor Integration Layer**
    - Mermaid Live Editor embedding/launch
    - BPMN editor integration (e.g., bpmn-js)
 
@@ -90,6 +94,12 @@ Users have process information spread across SOPs, meeting notes, policies, tick
 5. System exports to both Mermaid and BPMN from the same canonical model.
 6. Users can open output in integrated editor contexts for final formatting.
 7. System stores session state for resume/re-edit.
+8. System provides a Visual QA mode that compares:
+   - source document map nodes vs imported process nodes
+   - source connectors vs generated connectors
+   - source clusters/themes/titles vs generated groupings/labels
+9. Visual QA mode provides confidence and mismatch diagnostics per compared object.
+10. Users can accept source-aligned corrections directly from the QA panel.
 
 ## 9. Non-Functional Requirements
 
@@ -120,15 +130,23 @@ Users have process information spread across SOPs, meeting notes, policies, tick
 2. Re-run normalization only (without full re-parse).
 3. Regenerate Mermaid/BPMN outputs.
 
+### Flow D: Visual QA Reconciliation
+1. Load source-side document map overview.
+2. Render imported process map from canonical model.
+3. Run structural comparison for nodes/connectors/clusters/themes/titles.
+4. Resolve mismatch suggestions.
+5. Re-run comparison and approve.
+
 ## 11. Screen Requirements
 
 - **S1: Start/Map Type Selection**
 - **S2: Input Upload + Paste**
 - **S3: Extraction Progress**
 - **S4: Evidence & Ambiguity Review**
-- **S5: Structure Editor (canonical model grid/tree)**
-- **S6: Generated Diagram + Editor Launcher**
-- **S7: Export + Share**
+- **S5: Visual QA Compare (Document Map vs Imported Map)**
+- **S6: Structure Editor (canonical model grid/tree)**
+- **S7: Generated Diagram + Editor Launcher**
+- **S8: Export + Share**
 
 ## 12. Editor Integration Recommendation
 
@@ -151,6 +169,8 @@ Users have process information spread across SOPs, meeting notes, policies, tick
 - Ambiguity queue supports approve/edit/reject/merge.
 - Mermaid and BPMN export both available from same reviewed model.
 - End-to-end run from upload to rendered map without manual JSON editing.
+- Visual QA comparator reports node and connector alignment scores.
+- Users can resolve mismatches from QA panel and regenerate maps without restarting import.
 
 ## 14. Metrics
 
@@ -159,6 +179,9 @@ Users have process information spread across SOPs, meeting notes, policies, tick
 - Percent of steps with confidence above threshold.
 - Export success rate (Mermaid/BPMN).
 - User completion rate of wizard runs.
+- Node alignment precision/recall vs source document map.
+- Connector alignment precision/recall vs source document map.
+- Cluster/theme/title match rates after QA pass.
 
 ## 15. Risks and Mitigations
 
@@ -175,3 +198,25 @@ Users have process information spread across SOPs, meeting notes, policies, tick
 4. Mermaid/BPMN compilers
 5. Editor integration and export hardening
 6. Benchmarking and quality tuning
+
+## 17. Visual QA Input and Output Specification
+
+### 17.1 Input Sources
+- **Primary source:** Import wizard extracted canonical model.
+- **Reference source:** Document map overview artifact (HTML/JSON/SVG metadata).
+
+### 17.2 Comparison Objects
+- Nodes (activities, decisions, milestones)
+- Connectors (sequence, branch, merge, handoff)
+- Clusters/swimlanes and theme labels
+- Map titles/subtitles and major section headers
+
+### 17.3 QA Output Panel
+- Alignment scorecards (nodes/connectors/clusters/themes/titles)
+- Missing/extra/conflicting object lists
+- Suggested remaps (rename, merge, re-link)
+- Evidence links to source snippets and source-map anchors
+
+### 17.4 Integration Note for Local File Inputs
+- The sample path provided by stakeholders (for example a local `file:///...html`) must be loaded by the client/browser picker at runtime.
+- Backend services should not assume direct access to end-user local file paths.

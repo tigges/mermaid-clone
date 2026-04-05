@@ -157,6 +157,24 @@
         background: #fff;
         margin: 6px 4px;
       }
+      .split-compare {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .map-pane {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        padding: 8px;
+      }
+      .mini-map {
+        border: 1px dashed #b3bfd9;
+        border-radius: 6px;
+        min-height: 130px;
+        padding: 6px;
+        background: #fbfcff;
+      }
       footer.note {
         margin-top: 14px;
         font-size: 12px;
@@ -177,7 +195,8 @@
               <span class="step active">1. Intake</span>
               <span class="step">2. Parse</span>
               <span class="step">3. Review</span>
-              <span class="step">4. Render</span>
+              <span class="step">4. Visual QA</span>
+              <span class="step">5. Render</span>
             </div>
             <div class="row">
               <div class="col box">
@@ -212,7 +231,8 @@
               <span class="step">1. Intake</span>
               <span class="step active">2. Parse</span>
               <span class="step">3. Review</span>
-              <span class="step">4. Render</span>
+              <span class="step">4. Visual QA</span>
+              <span class="step">5. Render</span>
             </div>
             <div class="row">
               <div class="col box">
@@ -248,7 +268,8 @@
               <span class="step">1. Intake</span>
               <span class="step">2. Parse</span>
               <span class="step active">3. Review</span>
-              <span class="step">4. Render</span>
+              <span class="step">4. Visual QA</span>
+              <span class="step">5. Render</span>
             </div>
             <div class="row">
               <div class="col box">
@@ -276,13 +297,67 @@
         </section>
 
         <section class="screen">
-          <div class="screen-title">Screen 4: Render Target Selection</div>
+          <div class="screen-title">Screen 4: Visual QA Compare (Document Map vs Import Map)</div>
           <div class="frame">
             <div class="stepper">
               <span class="step">1. Intake</span>
               <span class="step">2. Parse</span>
               <span class="step">3. Review</span>
-              <span class="step active">4. Render</span>
+              <span class="step active">4. Visual QA</span>
+              <span class="step">5. Render</span>
+            </div>
+            <div class="split-compare">
+              <div class="map-pane">
+                <div class="label">Document Map Overview (reference)</div>
+                <div class="kpi">Source: <code>pdf_import_cluster_map_4_2_withdrawal.html</code></div>
+                <div class="mini-map">
+                  <span class="node">Title: Withdrawal Process</span>
+                  <span class="node">Cluster: Eligibility</span>
+                  <span class="node">Cluster: Verification</span>
+                  <span class="node">Cluster: Decision</span>
+                </div>
+              </div>
+              <div class="map-pane">
+                <div class="label">Imported Process Map (wizard output)</div>
+                <div class="kpi">Generated from canonical model v0.14</div>
+                <div class="mini-map">
+                  <span class="node">Start Request</span>
+                  <span class="node">Validate Identity</span>
+                  <span class="node">Assess Eligibility</span>
+                  <span class="node">Approve / Reject</span>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+              <div class="col box">
+                <div class="label">Alignment Scorecards</div>
+                <div class="kpi status-ok">Node match: 91%</div>
+                <div class="kpi status-ok">Connector match: 88%</div>
+                <div class="kpi status-warn">Cluster/theme/title match: 74%</div>
+              </div>
+              <div class="col box">
+                <div class="label">Mismatch Queue</div>
+                <div class="kpi">- Missing connector: "Verification -> Decision"</div>
+                <div class="kpi">- Theme mismatch: "Risk Gate" not mapped</div>
+                <div class="kpi">- Title normalization needed</div>
+              </div>
+            </div>
+            <div style="margin-top: 12px;">
+              <span class="btn">Apply Suggested Fixes</span>
+              <span class="btn secondary">Accept with Warnings</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen">
+          <div class="screen-title">Screen 5: Render Target Selection</div>
+          <div class="frame">
+            <div class="stepper">
+              <span class="step">1. Intake</span>
+              <span class="step">2. Parse</span>
+              <span class="step">3. Review</span>
+              <span class="step">4. Visual QA</span>
+              <span class="step active">5. Render</span>
             </div>
             <div class="row">
               <div class="col box">
@@ -310,7 +385,7 @@
         </section>
 
         <section class="screen" style="grid-column: 1 / -1;">
-          <div class="screen-title">Screen 5: Editor Shell (Embedded Existing Editors)</div>
+          <div class="screen-title">Screen 6: Editor Shell (Embedded Existing Editors)</div>
           <div class="frame">
             <div class="row">
               <div class="col box" style="max-width: 280px;">
