@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Import Wizard + Editor Wireframes</title>
+    <style>
+      :root {
+        --bg: #f4f6fb;
+        --card: #ffffff;
+        --line: #d8deea;
+        --text: #1c2230;
+        --muted: #5d667a;
+        --accent: #3f5efb;
+        --ok: #1b9b5f;
+        --warn: #c88400;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        position: sticky;
+        top: 0;
+        background: #111827;
+        color: #fff;
+        padding: 12px 20px;
+        border-bottom: 1px solid #2f3748;
+        z-index: 10;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+        gap: 16px;
+      }
+      .screen {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+        min-height: 420px;
+      }
+      .screen-title {
+        padding: 10px 12px;
+        background: #eff3ff;
+        border-bottom: 1px solid var(--line);
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .frame {
+        padding: 12px;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .col {
+        flex: 1;
+      }
+      .box {
+        border: 1px dashed #9ba7bf;
+        border-radius: 8px;
+        padding: 10px;
+        background: #fcfdff;
+      }
+      .label {
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 6px;
+      }
+      .pill {
+        display: inline-block;
+        font-size: 11px;
+        border-radius: 999px;
+        padding: 3px 8px;
+        margin-right: 6px;
+        margin-bottom: 6px;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+      .btn {
+        display: inline-block;
+        background: var(--accent);
+        color: #fff;
+        border-radius: 8px;
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+      .btn.secondary {
+        background: #ecf1ff;
+        color: #25304f;
+        border: 1px solid #cfd8ef;
+      }
+      .kpi {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .status-ok { color: var(--ok); font-weight: 600; }
+      .status-warn { color: var(--warn); font-weight: 600; }
+      .stepper {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .step {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 11px;
+        padding: 3px 8px;
+        background: #fff;
+      }
+      .step.active {
+        background: #dbe5ff;
+        border-color: #9db3ff;
+        font-weight: 700;
+      }
+      .code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 11px;
+        background: #0f172a;
+        color: #d5def6;
+        border-radius: 8px;
+        padding: 10px;
+        min-height: 130px;
+        overflow: auto;
+      }
+      .canvas {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: linear-gradient(#fefefe, #f7f9ff);
+        min-height: 180px;
+        padding: 8px;
+      }
+      .node {
+        display: inline-block;
+        border: 1px solid #9eb1db;
+        border-radius: 6px;
+        padding: 6px 8px;
+        font-size: 11px;
+        background: #fff;
+        margin: 6px 4px;
+      }
+      footer.note {
+        margin-top: 14px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Wireframes: Import Wizard + Embedded Editor Shell</h1>
+    </header>
+    <div class="container">
+      <div class="grid">
+        <section class="screen">
+          <div class="screen-title">Screen 1: Source Intake</div>
+          <div class="frame">
+            <div class="stepper">
+              <span class="step active">1. Intake</span>
+              <span class="step">2. Parse</span>
+              <span class="step">3. Review</span>
+              <span class="step">4. Render</span>
+            </div>
+            <div class="row">
+              <div class="col box">
+                <div class="label">Input Types</div>
+                <span class="pill">Upload PDF</span>
+                <span class="pill">Upload DOCX</span>
+                <span class="pill">Paste Text</span>
+                <span class="pill">CSV/JSON</span>
+              </div>
+              <div class="col box">
+                <div class="label">Project Context</div>
+                <div class="kpi">Domain: Insurance Claims</div>
+                <div class="kpi">Map Type: User Journey + BPMN</div>
+                <div class="kpi">Language: English</div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="label">Drop Zone</div>
+              <div class="kpi">Drag files or paste process narrative text here.</div>
+            </div>
+            <div style="margin-top: 12px;">
+              <span class="btn">Start Parsing</span>
+              <span class="btn secondary">Load Example</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen">
+          <div class="screen-title">Screen 2: Parsing + Structuring</div>
+          <div class="frame">
+            <div class="stepper">
+              <span class="step">1. Intake</span>
+              <span class="step active">2. Parse</span>
+              <span class="step">3. Review</span>
+              <span class="step">4. Render</span>
+            </div>
+            <div class="row">
+              <div class="col box">
+                <div class="label">Extraction Pipeline</div>
+                <div class="kpi status-ok">Text extraction complete</div>
+                <div class="kpi status-ok">Entity detection complete</div>
+                <div class="kpi status-warn">Decision logic: 3 ambiguities</div>
+              </div>
+              <div class="col box">
+                <div class="label">Detected Objects</div>
+                <div class="kpi">Actors: 6</div>
+                <div class="kpi">Steps: 24</div>
+                <div class="kpi">Decisions: 5</div>
+                <div class="kpi">Systems: 4</div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="label">Normalization Rules</div>
+              <span class="pill">Merge duplicate step names</span>
+              <span class="pill">Resolve actor aliases</span>
+              <span class="pill">Order by temporal cues</span>
+            </div>
+            <div style="margin-top: 12px;">
+              <span class="btn">Continue to Review</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen">
+          <div class="screen-title">Screen 3: Human Review + Confidence Queue</div>
+          <div class="frame">
+            <div class="stepper">
+              <span class="step">1. Intake</span>
+              <span class="step">2. Parse</span>
+              <span class="step active">3. Review</span>
+              <span class="step">4. Render</span>
+            </div>
+            <div class="row">
+              <div class="col box">
+                <div class="label">Ambiguities</div>
+                <div class="kpi">1) "Approve request" owner unclear (Ops vs Manager)</div>
+                <div class="kpi">2) Missing exception path after fraud check</div>
+                <div class="kpi">3) "Notify user" timing unknown</div>
+              </div>
+              <div class="col box">
+                <div class="label">Evidence Panel</div>
+                <div class="kpi">Highlights source snippets for selected node.</div>
+                <div class="kpi">Confidence: 0.64 <span class="status-warn">(Needs confirmation)</span></div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="label">Resolution Actions</div>
+              <span class="pill">Assign owner</span>
+              <span class="pill">Add missing branch</span>
+              <span class="pill">Mark unknown for follow-up</span>
+            </div>
+            <div style="margin-top: 12px;">
+              <span class="btn">Approve Canonical Model</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen">
+          <div class="screen-title">Screen 4: Render Target Selection</div>
+          <div class="frame">
+            <div class="stepper">
+              <span class="step">1. Intake</span>
+              <span class="step">2. Parse</span>
+              <span class="step">3. Review</span>
+              <span class="step active">4. Render</span>
+            </div>
+            <div class="row">
+              <div class="col box">
+                <div class="label">Output Formats</div>
+                <span class="pill">Mermaid</span>
+                <span class="pill">BPMN XML</span>
+                <span class="pill">JSON Canonical</span>
+              </div>
+              <div class="col box">
+                <div class="label">Editor Backends</div>
+                <div class="kpi">Mermaid Live (text + preview)</div>
+                <div class="kpi">bpmn-js (semantic process model)</div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="label">Validation Summary</div>
+              <div class="kpi status-ok">No disconnected nodes</div>
+              <div class="kpi status-ok">All decision nodes have >=2 exits</div>
+              <div class="kpi status-warn">2 optional fields missing</div>
+            </div>
+            <div style="margin-top: 12px;">
+              <span class="btn">Open in Editor Shell</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" style="grid-column: 1 / -1;">
+          <div class="screen-title">Screen 5: Editor Shell (Embedded Existing Editors)</div>
+          <div class="frame">
+            <div class="row">
+              <div class="col box" style="max-width: 280px;">
+                <div class="label">Left Rail - Import Artifacts</div>
+                <div class="kpi">Project: Claims Journey v2</div>
+                <div class="kpi">Map Type: User Journey</div>
+                <div class="kpi">Confidence: <span class="status-ok">92%</span></div>
+                <hr />
+                <div class="kpi">Unresolved Items (2)</div>
+                <div class="kpi">- Missing SLA at "Manual Review"</div>
+                <div class="kpi">- Unknown actor for "Escalate"</div>
+              </div>
+              <div class="col box">
+                <div class="label">Mermaid Code View (Existing Editor)</div>
+                <div class="code">flowchart LR
+A[Customer submits claim] --> B{Claim complete?}
+B -- No --> C[Request missing info]
+B -- Yes --> D[Fraud screening]
+D --> E{Risk high?}
+E -- Yes --> F[Manual review]
+E -- No --> G[Auto-approve]
+F --> H[Decision + notify customer]
+G --> H</div>
+              </div>
+              <div class="col box">
+                <div class="label">Rendered Diagram Preview</div>
+                <div class="canvas">
+                  <span class="node">Customer submits claim</span>
+                  <span class="node">Claim complete?</span>
+                  <span class="node">Fraud screening</span>
+                  <span class="node">Manual review</span>
+                  <span class="node">Auto-approve</span>
+                  <span class="node">Notify customer</span>
+                </div>
+                <div style="margin-top: 10px;">
+                  <span class="btn secondary">Switch to BPMN Editor</span>
+                  <span class="btn">Export SVG/PNG/BPMN</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="note">
+        Low-fidelity wireframe meant to align product flow and component boundaries:
+        import wizard intelligence is custom; editing surface is provided by embedded open-source editors.
+      </footer>
+    </div>
+  </body>
+</html>
